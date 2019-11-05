@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title></title>
+    
+           <style>
+            * {
+                box-sizing: border-box;
+            }
+            body > ul {
+                position: absolute;
+				background-color:#171717
+                top: 50%;
+                width: 800px;
+                height: 200px; 
+                left: 50%;
+                margin-left: -400px;
+                margin-top: -130px;
+            }
+
+            ul > li {
+                width: 25%;
+                list-style-type: none;
+                position: absolute;
+                top: 0;
+                padding: 20px;
+                height: 200px; 
+                opacity: 0;
+                padding-top: 40px;
+                text-align: center;
+                transition: 1s opacity; 
+            }
+
+            .active {
+                opacity: 1;
+            }
+
+            p {
+                font-family: sans-serif;
+                font-size: 13px;
+                color: #646566;
+                line-height: 1.5em;
+            }
+
+            strong { 
+                color: #fff;
+                font-weight: 700;
+                font-size: 60px; 
+                line-height: 100px; 
+            }
+        </style>
+    
+    
+  </head>
+  <body>
+    <div>
+
+<div style="float:left;width: 50%; position:absolute; left:50px; top:50px">
+<section>
+<table>
+<tr><td>Nombre:</td><td><input type="text" id="nombre"></td></tr>
+<tr><td>Apellido:</td><td><input type="text" id="apellido"></td></tr>
+<tr><td>Telefono:</td><td><input type="number" id="telefono"></td></tr>
+<tr><td>Email:</td><td><input type="text" id="email"></td></tr>
+<tr><td colspan="2"><button onclick="enviar()">Enviar</button></td></tr>
+<tr><td colspan="2"><div id="resp" style="color:#EE171A"></div></td></tr>
+<tr><td colspan="2"><div id="respon" style="color:#EE171A"></div></td></tr>
+
+
+</table>
+</section>
+</div>
+
+<div style="float:left;width: 50%;position:absolute; right:0">
+        <section>
+            <ul id="c"> 
+           
+            </ul>
+        </section>
+
+</div>
+    
+    
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
+<script>
+function enviar() {
+nombre=$("#nombre").val();
+apellido=$("#apellido").val();
+telefono=$("#telefono").val();
+email=$("#email").val();
+
+error="";
+if($("#nombre").val().length<9) error+="El campo nombre debe ser de mas de 8 Caracteres</br>";
+if($("#apellido").val().length <9) error+="El campo apellido debe ser de mas de 8 Caracteres</br>";
+if($("#telefono").val().length<9) error+="El campo telefono debe ser de mas de 8 Caracteres</br>";
+if($("#email").val().length <9) error+="El campo email debe ser de mas de 8 Caracteres</br>";
+if(email.indexOf('@') != -1){}else{error+="El Email no es correcto</br>"};
+
+if(error.length>2){
+	    $("#resp").html(error);
+	}else{
+		
+		
+  $.post('guardar.php', {nombre:nombre,apellido:apellido,telefono:telefono,email:email}, function(data){
+             
+            // show the response
+            $('#respon').html(data);
+             
+        }).fail(function() {
+         
+            // just in case posting your form failed
+            alert( "Posting failed." );
+             
+        });		
+		
+
+		
+		}
+	 
+}
+$(document).ready(function() {
+
+$.ajax({
+    url:'carrusel.php',
+    dataType:'json',
+    success:function(data){
+		console.log(data.data.images);
+        $.each(data.data.images, function(key, value) {
+    //alert(value.img_titulo);
+       $("#c").append("<li><p>"+value.img_titulo+"</p><p><a href='"+value.img_url+"' target='_blank'><img title='"+value.img_titulo2+"' src='"+value.img_imagen+"' ></a></p></li>");		
+		});
+       carrusel();
+	}
+});
+
+});	
+
+</script>
+        <script>
+		function carrusel(){
+            var timer = 4000;
+
+            var i = 0;
+            var max = $('#c > li').length;
+
+            $("#c > li").eq(i).addClass('active').css('left', '0');
+           // $("#c > li").eq(i + 1).addClass('active').css('left', '25%');
+           // $("#c > li").eq(i + 2).addClass('active').css('left', '50%');
+           // $("#c > li").eq(i + 3).addClass('active').css('left', '75%');
+
+
+            setInterval(function () {
+
+                $("#c > li").removeClass('active');
+                $("#c > li").eq(i).css('transition-delay', '0.25s');
+               // $("#c > li").eq(i + 1).css('transition-delay', '0.5s');
+               // $("#c > li").eq(i + 2).css('transition-delay', '0.75s');
+               // $("#c > li").eq(i + 3).css('transition-delay', '1s');
+
+                if (i < max - 1) {
+                    i = i + 1;
+                } else {
+                    i = 0;
+                }
+
+                $("#c > li").eq(i).css('left', '0').addClass('active').css('transition-delay', '1.25s');
+             ///   $("#c > li").eq(i + 1).css('left', '25%').addClass('active').css('transition-delay', '1.5s');
+             //   $("#c > li").eq(i + 2).css('left', '50%').addClass('active').css('transition-delay', '1.75s');
+            //    $("#c > li").eq(i + 3).css('left', '75%').addClass('active').css('transition-delay', '2s');
+
+            }, timer);
+			
+		}
+
+        </script>
+    
+    
+    
+    
+    
+  </body>
+</html>
